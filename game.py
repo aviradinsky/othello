@@ -105,7 +105,7 @@ def value(s):
     humanScore += sum(s[0][sq] == HUMAN for sq in CORNERS) * 4
 
     # give a point for each piece that the player has
-    # add 4 more points for the user having a corner piece, as it is permanent
+    # add 4 more points for each corner piece the user has, as it is permanent
     # a benefit of keeping the scoring computationally cheap is you can go to a greater depth
 
     # 100% win rate against random (DEPTH = 5 [as given]) (200 trials)
