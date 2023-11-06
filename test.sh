@@ -1,9 +1,10 @@
 function run(){
-    for i in {1..100}; do
-        badplayer | python3.12 play.py | grep "Ha ha ha I won!" &
+    for i in {1..50}; do
+        echo $i 1>&2
+        badplayer | python3.12 play.py | grep "Ha ha ha I won!"&
+        badplayer | python3.12 play.py | grep "Ha ha ha I won!"&
+        wait
     done
-
-    wait
 }
 
 function badplayer(){
