@@ -26,7 +26,7 @@ The state of the game is represented by a list of 4 items:
 def whoIsFirst(s):
     global HUMAN, COMPUTER
 
-    # if w then HUMAN otherwise COMPUTER
+    # loop until the user picks the starting collor that they would like (b/w)
     while True:
         i = input("What color would you like to be (b/w)? ")
         if i == "w":
@@ -99,15 +99,18 @@ CORNERS = (11, 18, 88, 81)
 
 
 def value(s):
-    # Returns the heuristic value of s
     computerScore = sum(s[0][sq] == COMPUTER for sq in SQUARES)
     computerScore += sum(s[0][sq] == COMPUTER for sq in CORNERS) * 4
     humanScore = sum(s[0][sq] == HUMAN for sq in SQUARES)
     humanScore += sum(s[0][sq] == HUMAN for sq in CORNERS) * 4
 
+    # give a point for each piece that the player has
+    # add 4 more points for the user having a corner piece, as it is permanent
+    # a benefit of keeping the scoring computationally cheap is you can go to a greater depth
+
     # 100% win rate against random (200 trials)
     # https://piazza.com/class/lljdzwy1q461mc/post/43
-    # Calculate the heuristic value as the difference between computer's and human's scores
+
     s[1] = computerScore - humanScore
     return s[1]
 
