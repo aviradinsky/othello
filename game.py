@@ -9,6 +9,7 @@ DIRECTIONS = (UP, UP_RIGHT, RIGHT, DOWN_RIGHT, DOWN, DOWN_LEFT, LEFT, UP_LEFT)
 VIC = 10000000  # The value of a winning board (for max)
 LOSS = -VIC  # The value of a losing board (for max)
 TIE = 0  # The value of a tie
+SQUARES = [i for i in range(11, 89) if 1 <= (i % 10) <= 8]
 
 """
 The state of the game is represented by a list of 4 items:
@@ -25,7 +26,15 @@ The state of the game is represented by a list of 4 items:
 def whoIsFirst(s):
     global HUMAN, COMPUTER
 
-    s[2] = HUMAN  ### your code here ###
+    # loop until the user picks the starting collor that they would like (b/w)
+    while True:
+        i = input("What color would you like to be (b/w)? ")
+        if i == "w":
+            s[2] = HUMAN
+            break
+        if i == "b":
+            s[2] = COMPUTER
+            break
 
     return s
 
@@ -35,15 +44,12 @@ def isHumTurn(s):
     return s[2] == HUMAN
 
 
-def squares():
-    return [i for i in range(11, 89) if 1 <= (i % 10) <= 8]
-
 
 # The HUMAN plays first (=BLACK)
 def create():
     global HUMAN, COMPUTER
     board = [EMPTY] * 100
-    for i in squares():
+    for i in SQUARES:
         board[i] = EMPTY
     board[44], board[45] = WHITE, BLACK
     board[54], board[55] = BLACK, WHITE
@@ -89,16 +95,36 @@ def inputMove(s):
             makeMove(move, s)
 
 
+CORNERS = (11, 18, 88, 81)
+
+
 def value(s):
-    # Returns the heuristic value of s
-    s[1] = 1  ### your code here ###
+    computerScore = sum(s[0][sq] == COMPUTER for sq in SQUARES)
+    computerScore += sum(s[0][sq] == COMPUTER for sq in CORNERS) * 4
+    humanScore = sum(s[0][sq] == HUMAN for sq in SQUARES)
+    humanScore += sum(s[0][sq] == HUMAN for sq in CORNERS) * 4
+
+    # give a point for each piece that the player has
+    # add 4 more points for each corner piece the user has, as it is permanent
+    # a benefit of keeping the scoring computationally cheap is you can go to a greater depth
+
+    # 100% win rate against random (DEPTH = 5 [as given]) (200 trials)
+    # as required by:
+    # https://piazza.com/class/lljdzwy1q461mc/post/43
+
+    s[1] = computerScore - humanScore
     return s[1]
 
 
 def isFinished(s):
     # Returns True if the game ended
 
-    ### your code here ###
+    if not anyLegalMove(s):
+        # anyLegalMove mutates s[3] to the return value of this function
+        # whoWin's then sets the heuristic as either winning for a side
+        # or a tie
+        # this is useful for printing out the state
+        s[1] = whoWin(s)
 
     return s[3]
 
@@ -110,12 +136,12 @@ def isLegal(move, s):
 
 # get a list of legal moves for the player
 def legalMoves(s):
-    return [sq for sq in squares() if isLegal(sq, s)]
+    return [sq for sq in SQUARES if isLegal(sq, s)]
 
 
 # Is there any legal move for this player
 def anyLegalMove(s):
-    isAny = any(isLegal(sq, s) for sq in squares())
+    isAny = any(isLegal(sq, s) for sq in SQUARES)
     if not (isAny):
         s[3] = True
     return isAny
@@ -150,7 +176,7 @@ def makeMove(move, s):
 def whoWin(s):
     computerScore = 0
     humanScore = 0
-    for sq in squares():
+    for sq in SQUARES:
         piece = s[0][sq]
         if piece == COMPUTER:
             computerScore += 1
@@ -169,7 +195,7 @@ def whoWin(s):
 
 
 def isValid(move):
-    return isinstance(move, int) and move in squares()
+    return isinstance(move, int) and move in SQUARES
 
 
 def findBracket(square, s, direction):
