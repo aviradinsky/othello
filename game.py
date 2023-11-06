@@ -119,6 +119,10 @@ def isFinished(s):
     # Returns True if the game ended
 
     if not anyLegalMove(s):
+        # anyLegalMove mutates s[3]
+        # whoWin's then sets the heuristic as either winning for a side
+        # or a tie
+        # this is useful for printing out the state
         s[1] = whoWin(s)
 
     return s[3]
