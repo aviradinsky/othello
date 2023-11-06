@@ -109,6 +109,7 @@ def value(s):
     # a benefit of keeping the scoring computationally cheap is you can go to a greater depth
 
     # 100% win rate against random (DEPTH = 5 [as given]) (200 trials)
+    # as required by:
     # https://piazza.com/class/lljdzwy1q461mc/post/43
 
     s[1] = computerScore - humanScore
