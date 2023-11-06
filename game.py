@@ -91,14 +91,19 @@ def inputMove(s):
 
 def value(s):
     # Returns the heuristic value of s
-    s[1] = 1  ### your code here ###
+    computerScore = sum(1 for sq in squares() if s[0][sq] == COMPUTER)
+    humanScore = sum(1 for sq in squares() if s[0][sq] == HUMAN)
+
+    # Calculate the heuristic value as the difference between computer's and human's scores
+    s[1] = computerScore - humanScore
     return s[1]
 
 
 def isFinished(s):
     # Returns True if the game ended
 
-    ### your code here ###
+    if not anyLegalMove(s):
+        s[1] = whoWin(s)
 
     return s[3]
 
